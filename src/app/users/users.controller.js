@@ -1,4 +1,4 @@
-const { dbConnection } = require("../../database/database-connection.service");
+const { dbConnections } = require("../../database/services/db-connections");
 
 /**
  * 
@@ -14,8 +14,8 @@ const { dbConnection } = require("../../database/database-connection.service");
  * @returns { message } object
  */
 const createUser = async (req) => {
-    const { users } = dbConnection;
-    await users.create(req.body);
+    const { Users } = dbConnections;
+    await Users.create(req.body);
     return { message: "User is created successfully!" };
 };
 
@@ -26,12 +26,9 @@ const createUser = async (req) => {
  * @returns { data } object
  */
 const getAllUsers = async (req) => {
-    const { users } = dbConnection;
+    const { Users } = dbConnections;
     const { itemPerPage, selectedItems } = req.query;
-    const data = await users.findAndCountAll({
-        limit: itemPerPage,
-        offset: (itemPerPage * (selectedItems - 1))
-    });
+    const data = await Users.find();
     return { data };
 };
 
@@ -41,9 +38,9 @@ const getAllUsers = async (req) => {
  * @returns { data } object
  */
 const getUserInfoByEmail = async (req) => {
-    const { users } = dbConnection;
+    const { Users } = dbConnections;
     const { emailId } = req.query;
-    const userInfo = await users.findOne({ where: { email: emailId } });
+    const userInfo = await Users.findOne({ where: { email: emailId } });
     return { data: userInfo };
 };
 
